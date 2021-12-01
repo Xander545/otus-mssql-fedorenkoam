@@ -1,1 +1,1 @@
-# otus-mssql-fedorenkoam
+# Обучение продвинутым основам MS SQL от OTUS
