@@ -1,0 +1,1 @@
+select db_name() as dbname, @@servername as srvname, getdate() as dt, @@version as ver
