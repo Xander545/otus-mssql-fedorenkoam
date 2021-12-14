@@ -72,7 +72,7 @@ SELECT DISTINCT
 	DATENAME(m, o.OrderDate) AS MonthOfOrder,
 	DATENAME(q, o.OrderDate) AS QuaterOfOrder,
 	-- Математика или ...
-	-- ABS((DATEPART(m, o.OrderDate) - 1) / 4) + 1 AS [1/3 of YearOrder],
+	-- ABS((DATEPART(m, o.OrderDate) - 1) / 4) + 1 AS ThirdYearOrder,
 	-- ... или CASE ?
 	CASE 
 		WHEN DATEPART(m, o.OrderDate) BETWEEN 1 AND 4 THEN 1
