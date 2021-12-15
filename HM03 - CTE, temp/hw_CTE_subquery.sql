@@ -7,8 +7,9 @@ FROM Application.People AS p
 WHERE p.PersonID NOT IN (
 						SELECT i.SalespersonPersonID 
 						FROM Sales.Invoices AS i 
-						WHERE i.InvoiceDate BETWEEN '20150704' AND '20150705'
+						WHERE i.InvoiceDate = '20150704'
 						)
+  AND p.IsSalesperson = 1
 
 -- 2. Выберите товары с минимальной ценой (подзапросом). Сделайте два варианта подзапроса. Вывести: ИД товара, наименование товара, цена.
 SELECT itm.StockItemID, itm.StockItemName, itm.UnitPrice
