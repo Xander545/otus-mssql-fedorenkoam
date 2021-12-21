@@ -116,12 +116,15 @@ UNPIVOT
 В результатах должно быть ид клиета, его название, ид товара, цена, дата покупки.
 */
 
-SELECT c.CustomerID, c.CustomerName, p.StockItemID, p.UnitPrice, p.InvoiceDate
+SELECT c.CustomerID, c.CustomerName, p.StockItemID, p.UnitPrice, i.InvoiceDate AS  LastInvoiceDate
 FROM Sales.Customers AS c
 OUTER APPLY (
-	SELECT TOP 2 il.StockItemID, il.UnitPrice, i.InvoiceDate
+	SELECT TOP 2 il.StockItemID, il.UnitPrice, MAX(il.InvoiceID) AS LastSaleId
 	FROM Sales.Invoices AS i
 	LEFT JOIN Sales.InvoiceLines AS il On i.InvoiceID = il.InvoiceID
 	WHERE i.CustomerID = c.CustomerID
+	GROUP BY il.StockItemID, il.UnitPrice
 	ORDER BY il.UnitPrice DESC
 ) AS p
+LEFT JOIN Sales.Invoices AS i ON i.InvoiceID = p.LastSaleId
+ORDER BY c.CustomerID
