@@ -72,8 +72,28 @@ ORDER BY r.InvoiceDate
 2. Сделайте расчет суммы нарастающим итогом в предыдущем запросе с помощью оконной функции.
    Сравните производительность запросов 1 и 2 с помощью set statistics time, io on
 */
-
-напишите здесь свое решение
+DECLARE @last_day2 AS date;
+SET @last_day2 = '2015-12-31';
+WITH 
+SalesForReport AS
+(
+	SELECT i.InvoiceID, i.CustomerID, i.InvoiceDate, EOMONTH(i.InvoiceDate) AS EOMInvoice, SUM(il.Quantity * il.UnitPrice) AS InvoiceSum
+	FROM Sales.Invoices AS i
+	LEFT JOIN Sales.InvoiceLines AS il ON il.InvoiceID = i.InvoiceID
+	WHERE i.InvoiceDate BETWEEN '2015-01-01' AND @last_day2
+	GROUP BY i.InvoiceID, i.CustomerID, i.InvoiceDate, EOMONTH(i.InvoiceDate)
+),
+SalesByMonth AS 
+(
+	SELECT EOMInvoice, SUM(InvoiceSum) AS TotalSalesByMonth
+	FROM SalesForReport AS aggr
+	GROUP BY EOMInvoice
+)
+SELECT r.InvoiceID, c.CustomerName, r.InvoiceDate, 
+	   SUM(r.InvoiceSum) OVER ()
+FROM SalesForReport AS r
+LEFT JOIN Sales.Customers AS c ON c.CustomerID = r.CustomerID
+ORDER BY r.InvoiceDate
 
 /*
 3. Вывести список 2х самых популярных продуктов (по количеству проданных) 
